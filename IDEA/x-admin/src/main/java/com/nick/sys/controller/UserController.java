@@ -4,6 +4,7 @@ import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.nick.common.vo.Result;
 import com.nick.sys.entity.User;
 import com.nick.sys.service.IUserRoleService;
@@ -11,7 +12,7 @@ import com.nick.sys.service.IUserService;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;

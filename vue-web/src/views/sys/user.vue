@@ -7,9 +7,8 @@
                     <el-input v-model="searchModel.username" placeholder="Name" clearable></el-input>
                     <el-input v-model="searchModel.phone" placeholder="telephone" clearable></el-input>
                     <el-button @click="getUserList" type="primary" round icon="el-icon-search">Search</el-button>
-                    <el-button @click="getUserFavoriteList" type="primary" round icon="el-icon-star-on">收藏</el-button>
-                    <el-upload action="http://localhost:9999/user/import" :headers="getUploadHeaders" ref="upload"
-                        :on-success="handleImport" style="display: inline-block; margin: 10px;" :show-file-list="false">
+                    <el-button @click="getUserFavoriteList" type="primary" round icon="el-icon-star-on">favorite</el-button>
+                    <el-upload action="http://localhost:9999/user/import" :headers="getUploadHeaders" ref="upload" :on-success="handleImport" style="display: inline-block; margin: 10px;" :show-file-list="false">
                         <el-button type="primary" icon="el-icon-upload">Import</el-button>
                     </el-upload>
                     <el-button @click="exportUser" type="primary" icon="el-icon-share">Export</el-button>
@@ -28,7 +27,7 @@
                     <template slot-scope="scope">
                         <!-- (pageNo-1) * pageSize + index + 1 -->
                         {{
-                            (searchModel.pageNo - 1) * searchModel.pageSize + scope.$index + 1
+                        (searchModel.pageNo - 1) * searchModel.pageSize + scope.$index + 1
                         }}
                     </template>
                 </el-table-column>
@@ -49,7 +48,7 @@
                             more phone
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item>11111111111</el-dropdown-item>
-                                <el-dropdown-item>11411411312</el-dropdown-item>
+                                <el-dropdown-item>11111111112</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                         <el-button @click="openEditUI(scope.row.id)" type="primary" icon="el-icon-edit" size="mini"
@@ -76,7 +75,7 @@
                 <el-form-item label="User phone" prop="phone" :label-width="formLabelWidth">
                     <el-input v-model="useForm.phone" autocomplete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="User status" :label-width="formLabelWidth">
+                <el-form-item label="Favorite" :label-width="formLabelWidth">
                     <el-switch v-model="useForm.status" :active-value="1" :inactive-value="0">
                     </el-switch>
                 </el-form-item>
@@ -97,14 +96,14 @@
 
 import userApi from '@/api/userManage'
 export default {
-    data() {
-        var checkEmail = (rule, value, callback) => {
-            var reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+    data(){
+        var checkEmail  = (rule, value, callback) => {
+            var reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/     
             if (!reg.test(value)) {
-                return callback(new Error('The email address format is incorrect'));
-            }
-            callback();
-        };
+               return callback(new Error('The email address format is incorrect'));
+                }
+            callback();    
+            };
         return {
             formLabelWidth: '130px',
             useForm: {},
@@ -113,10 +112,10 @@ export default {
             total: 0,
             searchModel: {
                 pageNo: 1,
-                pageSize: 10
+                pageSize: 10 
             },
             userList: [],
-            rules: {
+            rules:{
                 username: [
                     { required: true, message: 'Please enter a username', trigger: 'blur' },
                     { min: 3, max: 50, message: 'Lengths range from 3 to 50 characters', trigger: 'blur' }
@@ -129,18 +128,18 @@ export default {
                     { required: true, message: 'Please enter a email', trigger: 'blur' },
                     { validator: checkEmail, trigger: 'blur' }
                 ],
-            }
+            }          
         }
     },
-    methods: {
-        handleImport(res, file, fileList) {
-            if (res.code == '200') {
+    methods:{
+        handleImport(res, file, fileList){
+            if(res.code == '200'){
                 this.$message.succeess("操作成功")
-            } else {
+            }else{
                 this.$message.error(res.msg)
             }
         },
-        exportUser() {//批量导出
+        exportUser(){//批量导出
             const token = this.user?.token;
             window.open(`http://localhost:9999/user/export?token=${token || ''}`);
         },
@@ -149,7 +148,7 @@ export default {
                 'token': this.user.token || ''
             };
         },
-        deleteUser(user) {
+        deleteUser(user){
             this.$confirm(`Do you confirm the deletion of the user ${user.username} ?`, '提示', {
                 confirmButtonText: 'certain',
                 cancelButtonText: 'concel',
@@ -157,25 +156,25 @@ export default {
             }).then(() => {
                 userApi.deleteUserById(user.id).then(response => {
                     this.$message({
-                        type: 'success',
-                        message: response.message
+                    type: 'success',
+                    message: response.message
                     });
                     this.getUserList();
                 });
 
             }).catch(() => {
                 this.$message({
-                    type: 'info',
+                    type: 'info', 
                     message: '已取消删除'
                 });
             });
         },
-        saverUser() {
+        saverUser(){
             //触发表单验证
             this.$refs.userFormRef.validate((valid) => {
                 if (valid) {
                     //提交请求后台
-                    userApi.saveUser(this.useForm).then(response => {
+                    userApi.saveUser(this.useForm).then(response =>{
                         //成功提示
                         this.$message({
                             message: response.message,
@@ -193,35 +192,35 @@ export default {
             });
 
         },
-        clearForm() {
+        clearForm(){
             this.useForm = {};
             this.$refs.userFormRef.clearValidate();
         },
-        openEditUI(id) {
-            if (id == null) {
+        openEditUI(id){
+            if( id == null ){
                 this.title = "New User";
             }
-            else {
+            else{
                 this.title = "Update User";
                 //根据id查询用户数据
-                userApi.getUserById(id).then(response => {
+                userApi.getUserById(id).then(response =>{
                     this.useForm = response.data;
                 })
             }
             this.dialogFormVisible = true;
         },
-        handleSizeChange(pageSize) {
+        handleSizeChange(pageSize){
             this.searchModel.pageSize = pageSize;
             this.getUserList();
         },
-        handleCurrentChange(pageNo) {
+        handleCurrentChange(pageNo){
             this.searchModel.pageNo = pageNo;
             this.getUserList();
         },
         getUserList() {
             userApi.getUserList(this.searchModel).then((response) => {
-                this.userList = response.data.rows;
-                this.total = response.data.total;
+            this.userList = response.data.rows;
+            this.total = response.data.total;
             });
         },
         getUserFavoriteList() {
@@ -233,7 +232,7 @@ export default {
     },
     created() {
         this.getUserList();
-    },
+  },
 };
 
 </script>
@@ -243,8 +242,8 @@ export default {
     width: 300px;
     margin-right: 10px;
 }
-
-.el-dialog .el-input {
+.el-dialog .el-input{
     width: 85%;
 }
+
 </style>
